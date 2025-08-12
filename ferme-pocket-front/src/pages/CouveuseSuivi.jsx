@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { 
-  ArrowLeft, 
-  Eye, 
-  Thermometer, 
-  Droplets, 
-  AlertTriangle, 
-  CheckCircle, 
+import {
+  ArrowLeft,
+  Eye,
+  Thermometer,
+  Droplets,
+  AlertTriangle,
+  CheckCircle,
   Activity,
   Egg,
   BarChart3,
@@ -16,8 +16,8 @@ import {
   Trash2
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { couveuseService } from "../api/couveuse";
-import { ensureAuthenticated } from "../utils/auth-helper";
+import couveuseService from "../api/couveuse";
+import { ensureAuthenticated } from "../utils/auth-helper"; 
 
 export default function CouveuseSuivi() {
   const navigate = useNavigate();
@@ -46,24 +46,24 @@ export default function CouveuseSuivi() {
     try {
       setLoading(true);
       setError(null);
-      
+
       if (!id) {
         throw new Error('ID de couveuse manquant');
       }
-      
+
       await ensureAuthenticated();
-      
+
       // Charger les données de la couveuse
       const couveuseDatas = await couveuseService.getById(id);
       setCouveuse(couveuseDatas);
-      
+
       // Appliquer les bonnes pratiques de vérification des types
       const lotsData = Array.isArray(couveuseDatas.lots_actifs) ? couveuseDatas.lots_actifs : [];
       setLots(lotsData);
-      
+
       // Calculer les statistiques
       calculateStatistics(couveuseDatas, lotsData);
-      
+
     } catch (err) {
       console.error('Erreur lors du chargement des données:', err);
       setError(`Erreur lors du chargement des données de la couveuse: ${err.message}`);
@@ -71,14 +71,14 @@ export default function CouveuseSuivi() {
       setLoading(false);
     }
   };
-
+console.log('couveuseDatas', couveuse);
   // Fonction pour calculer les statistiques
   const calculateStatistics = (couveuseDatas, lotsData) => {
     if (!couveuseDatas) return;
-    
+
     const totalOeufs = lotsData.reduce((total, lot) => total + (lot.nb_oeufs || 0), 0);
     const tauxOccupation = couveuseDatas.capacite > 0 ? Math.round((totalOeufs / couveuseDatas.capacite) * 100) : 0;
-    
+
     setStatistiques({
       totalOeufs,
       tauxOccupation,
@@ -101,19 +101,19 @@ export default function CouveuseSuivi() {
     try {
       setLoading(true);
       await ensureAuthenticated();
-      
+
       const lotData = {
         ...nouveauLot,
         couveuse_id: id,
         nb_oeufs: parseInt(nouveauLot.nb_oeufs)
       };
-      
+
       // Ici vous pouvez ajouter l'appel API pour créer le lot
       // await couveuseService.ajouterLot(lotData);
-      
+
       // Recharger les données
       await loadCouveuseDatas();
-      
+
       // Réinitialiser le formulaire
       setNouveauLot({
         nom: '',
@@ -122,7 +122,7 @@ export default function CouveuseSuivi() {
         type_volaille: 'poule'
       });
       setShowAjouterLot(false);
-      
+
     } catch (err) {
       console.error('Erreur lors de l\'ajout du lot:', err);
       setError('Erreur lors de l\'ajout du lot');
@@ -177,7 +177,6 @@ export default function CouveuseSuivi() {
     }
   };
 
-  // Affichage du chargement
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto p-4">
@@ -194,7 +193,6 @@ export default function CouveuseSuivi() {
     );
   }
 
-  // Affichage des erreurs
   if (error) {
     return (
       <div className="max-w-7xl mx-auto p-4">
@@ -248,56 +246,203 @@ export default function CouveuseSuivi() {
             onClick={() => navigate('/couveuse')}
             className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
             title="Retour à la liste des couveuses"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 truncate">
+                {couveuse.nom} 
+              </h1>
+              <span className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border ${getStatutColor(couveuse.statut)} flex-shrink-0`}>
+                {getStatutIcon(couveuse.statut)}
+                <span className="hidden xs:inline">{getStatutText(couveuse.statut)}</span>
+              </span>
+            </div>
+            <p className="text-sm sm:text-base text-gray-600 mt-1 truncate">
+              {couveuse.type} • Capacité: {couveuse.capacite} œufs
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <button
+            onClick={refreshData}
+            disabled={refreshing}
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 text-sm"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">Actualiser</span>
+          </button>
+          <button
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+            onClick={() => setShowAjouterLot(true)}
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">Nouveau lot</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Cartes de statistiques */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
+        {/* Total œufs */}
+        <div className="bg-white rounded-lg shadow p-3 sm:p-6 border-l-4 border-blue-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-gray-600">Total œufs</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">{statistiques?.totalOeufs || 0}</p>
+            </div>
+            <div className="p-2 sm:p-3 bg-blue-100 rounded-full">
+              <Egg className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        {/* Taux d'occupation */}
+        <div className="bg-white rounded-lg shadow p-3 sm:p-6 border-l-4 border-green-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-gray-600">Taux d'occupation</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">{statistiques?.tauxOccupation || 0}%</p>
+            </div>
+            <div className="p-2 sm:p-3 bg-green-100 rounded-full">
+              <BarChart3 className="w-4 h-4 sm:w-6 sm:h-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        {/* Lots actifs */}
+        <div className="bg-white rounded-lg shadow p-3 sm:p-6 border-l-4 border-purple-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-gray-600">Lots actifs</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">{lots.length}</p>
+            </div>
+            <div className="p-2 sm:p-3 bg-purple-100 rounded-full">
+              <Activity className="w-4 h-4 sm:w-6 sm:h-6 text-purple-600" />
+            </div>
+          </div>
+        </div>
+
+        {/* Température */}
+        <div className="bg-white rounded-lg shadow p-3 sm:p-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-gray-600">Température</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">{statistiques?.temperature || 0}°C</p>
+            </div>
+            <div className="p-2 sm:p-3 bg-red-100 rounded-full">
+              <Thermometer className="w-4 h-4 sm:w-6 sm:h-6 text-red-600" />
+            </div>
+          </div>
+        </div>
+
+        {/* Humidité */}
+        <div className="bg-white rounded-lg shadow p-3 sm:p-6 border-l-4 border-cyan-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-medium text-gray-600">Humidité</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">{statistiques?.humidite || 0}%</p>
+            </div>
+            <div className="p-2 sm:p-3 bg-cyan-100 rounded-full">
+              <Droplets className="w-4 h-4 sm:w-6 sm:h-6 text-cyan-600" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Interface à onglets */}
+      <div className="bg-white rounded-lg border border-gray-200">
+        <div className="border-b border-gray-200">
+          <nav className="flex space-x-4 sm:space-x-8 px-4 sm:px-6 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab("overview")}
+              className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${activeTab === "overview"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
             >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 truncate">
-                  {couveuse.nom}
-                </h1>
-                <span className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border ${getStatutColor(couveuse.statut)} flex-shrink-0`}>
-                  {getStatutIcon(couveuse.statut)}
-                  <span className="hidden xs:inline">{getStatutText(couveuse.statut)}</span>
-                </span>
+              <div className="flex items-center gap-2">
+                <Eye className="w-4 h-4" />
+                <span className="hidden xs:inline">Vue d'ensemble</span>
+                <span className="xs:hidden">Vue</span>
               </div>
-              <p className="text-sm sm:text-base text-gray-600 mt-1 truncate">
-                {couveuse.type} • Capacité: {couveuse.capacite} œufs
-              </p>
+            </button>
+            <button
+              onClick={() => setActiveTab("lots")}
+              className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${activeTab === "lots"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+            >
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4" />
+                Lots
+              </div>
+            </button>
+          </nav>
+        </div>
+
+        {/* Contenu de l'onglet */}
+        <div className="p-4 sm:p-6">
+          {activeTab === "overview" && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-4">Informations générales</h3>
                 <div className="space-y-3">
-                  {Array.isArray(lots) && lots.length > 0 ? (
-                    lots.map((lot, index) => (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm sm:text-base text-gray-600">Type:</span>
+                    <span className="text-sm sm:text-base font-medium text-right">{couveuse.type}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm sm:text-base text-gray-600">Capacité:</span>
+                    <span className="text-sm sm:text-base font-medium text-right">{couveuse.capacite} œufs</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm sm:text-base text-gray-600">Température:</span>
+                    <span className="text-sm sm:text-base font-medium text-right">{couveuse.temperature || 'N/A'}°C</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm sm:text-base text-gray-600">Humidité:</span>
+                    <span className="text-sm sm:text-base font-medium text-right">{couveuse.humidite || 'N/A'}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-4">Lots actifs</h3>
+                {Array.isArray(lots) && lots.length > 0 ? (
+                  <div className="space-y-3">
+                    {lots.map((lot, index) => (
                       <div key={lot.id || index} className="bg-gray-50 rounded-lg p-4">
                         <h4 className="font-medium text-gray-900">{lot.nom || `Lot ${index + 1}`}</h4>
                         <p className="text-sm text-gray-600">{lot.nb_oeufs || 0} œufs</p>
                       </div>
-                    ))
-                  ) : (
-                    <div className="bg-gray-50 rounded-lg p-4 text-center">
-                      <Egg className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-500">Aucun lot actif</p>
-                    </div>
-                  )}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 rounded-lg p-8 text-center">
+                    <Egg className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600">Aucun lot actif</p>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
-          {/* Contenu de l'onglet Lots */}
-          {activeTab === 'lots' && (
+          {activeTab === "lots" && (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-900">Gestion des lots</h3>
+                <h3 className="text-base sm:text-lg font-medium text-gray-900">Gestion des lots</h3>
                 <button
-                  onClick={() => navigate(`/couveuse/${couveuse.id}/ajouter-lot`)}
-                  disabled={couveuse.statut !== 'active'}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                  onClick={() => setShowAjouterLot(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                 >
                   <Plus className="w-4 h-4" />
                   Ajouter un lot
                 </button>
               </div>
-              
+
               {Array.isArray(lots) && lots.length > 0 ? (
                 lots.map((lot, index) => (
                   <div key={lot.id || index} className="bg-white border border-gray-200 rounded-lg p-4">
@@ -335,9 +480,8 @@ export default function CouveuseSuivi() {
                   <h4 className="text-lg font-medium text-gray-900 mb-2">Aucun lot actif</h4>
                   <p className="text-gray-600 mb-4">Ajoutez un lot d'œufs pour commencer.</p>
                   <button
-                    onClick={() => navigate(`/couveuse/${couveuse.id}/ajouter-lot`)}
-                    disabled={couveuse.statut !== 'active'}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto disabled:opacity-50"
+                    onClick={() => setShowAjouterLot(true)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto"
                   >
                     <Plus className="w-4 h-4" />
                     Ajouter le premier lot
@@ -348,32 +492,101 @@ export default function CouveuseSuivi() {
           )}
         </div>
       </div>
-    </div>
-  );
-  } catch (renderError) {
-    console.error('Erreur de rendu dans CouveuseSuivi:', renderError);
-    return (
-      <div className="max-w-7xl mx-auto p-4">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-red-800 mb-2">Erreur de rendu</h3>
-          <p className="text-red-600 mb-4">Une erreur s'est produite lors du rendu de la page de suivi.</p>
-          <div className="flex justify-center gap-3">
-            <button
-              onClick={() => navigate('/couveuse')}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Retour à la liste
-            </button>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Recharger la page
-            </button>
+
+      {/* Modal d'ajout de lot */}
+      {showAjouterLot && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Ajouter un nouveau lot</h3>
+              <button
+                onClick={() => setShowAjouterLot(false)}
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAjouterLot} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nom du lot
+                </label>
+                <input
+                  type="text"
+                  value={nouveauLot.nom}
+                  onChange={(e) => setNouveauLot({ ...nouveauLot, nom: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: Lot Poules Pondeuses"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre d'œufs
+                </label>
+                <input
+                  type="number"
+                  value={nouveauLot.nb_oeufs}
+                  onChange={(e) => setNouveauLot({ ...nouveauLot, nb_oeufs: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: 50"
+                  min="1"
+                  max={couveuse.capacite}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Date de début
+                </label>
+                <input
+                  type="date"
+                  value={nouveauLot.date_debut}
+                  onChange={(e) => setNouveauLot({ ...nouveauLot, date_debut: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Type de volaille
+                </label>
+                <select
+                  value={nouveauLot.type_volaille}
+                  onChange={(e) => setNouveauLot({ ...nouveauLot, type_volaille: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="poule">Poule</option>
+                  <option value="canard">Canard</option>
+                  <option value="oie">Oie</option>
+                  <option value="dinde">Dinde</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAjouterLot(false)}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {loading ? 'Ajout...' : 'Ajouter'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
 }

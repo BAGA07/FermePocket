@@ -39,6 +39,22 @@ export default function MainLayout({ children }) {
             Tableau de bord
           </NavLink>
           <NavLink
+            to="/elevage"
+            className={({ isActive }) =>
+              isActive ? "text-green-600 font-semibold" : "text-gray-600"
+            }
+          >
+            Elevage
+          </NavLink>
+          <NavLink
+            to="/personnel"
+            className={({ isActive }) =>
+              isActive ? "text-green-600 font-semibold" : "text-gray-600"
+            }
+          >
+            GRH
+          </NavLink>
+          <NavLink
             to="/stocks"
             className={({ isActive }) =>
               isActive ? "text-green-600 font-semibold" : "text-gray-600"
@@ -47,7 +63,7 @@ export default function MainLayout({ children }) {
             Stocks
           </NavLink>
           <NavLink
-            to="/couveuse"
+            to="/couveuse/dashboard"
             className={({ isActive }) =>
               isActive ? "text-green-600 font-semibold" : "text-gray-600"
             }
