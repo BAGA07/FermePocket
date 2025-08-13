@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('personnels', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->string('nom');
             $table->string('poste');
             $table->float('salaire')->default(0);

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('couveuses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->string('nom');
             $table->integer('capacite');
             $table->enum('type', ['manuelle', 'automatique']);

@@ -12,6 +12,7 @@ import Elevage from "./pages/Elevage";
 import Ventes from "./pages/Ventes";
 import Depenses from "./pages/Depenses";
 import Rapports from "./pages/Rapports";
+import FinanceDashboard from "./pages/FinanceDashboard";
 
 // Couveuse
 import Couveuse from "./pages/Couveuse";
@@ -20,6 +21,11 @@ import CouveuseSuivi from "./pages/CouveuseSuivi";
 
 // Stocks
 import StocksDashboard from "./pages/StocksDashboard";
+
+// Personnel
+import PersonnelDashboard from "./pages/PersonnelDashboard";
+import PersonnelList from "./pages/PersonnelList";
+import PersonnelCreate from "./pages/PersonnelCreate";
 
 function App() {
   // Routes privées avec layout
@@ -30,6 +36,7 @@ function App() {
     { path: "/elevage", element: <Elevage /> },
     { path: "/ventes", element: <Ventes /> },
     { path: "/depenses", element: <Depenses /> },
+    { path: "/finances", element: <FinanceDashboard /> },
     { path: "/rapports", element: <Rapports /> },
 
     // Couveuse
@@ -43,7 +50,9 @@ function App() {
     { path: "/stocks/dashboard", element: <StocksDashboard /> },
 
     // Personnel
-    { path: "/personnel", element: <div>Personnel Page</div> }, // Placeholder for Personnel page
+    { path: "/personnel", element: <PersonnelList /> },
+    { path: "/personnel/create", element: <PersonnelCreate /> },
+    { path: "/personnel/dashboard", element: <PersonnelDashboard /> },
   ];
 
   return (
@@ -52,7 +61,6 @@ function App() {
         <Routes>
           {/* Route publique */}
           <Route path="/login" element={<Login />} />
-
           {/* Routes privées */}
           {privateRoutes.map(({ path, element }) => (
             <Route

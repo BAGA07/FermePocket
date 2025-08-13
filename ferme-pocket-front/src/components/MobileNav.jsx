@@ -1,7 +1,6 @@
 // src/components/MobileNav.jsx
 import { NavLink } from "react-router-dom";
-import { Home, Box, BarChart2, Settings, Egg } from "lucide-react";
-import NotificationButton from "./NotificationButton";
+import { Home, Box, BarChart2, Settings, Egg, DollarSign } from "lucide-react";
 
 export default function MobileNav() {
   return (
@@ -16,14 +15,16 @@ export default function MobileNav() {
         <span className="text-xs">Stocks</span>
       </NavLink>
 
+      <NavLink to="/finances" className={({ isActive }) => isActive ? "flex flex-col items-center text-green-600" : "flex flex-col items-center text-gray-500"}>
+        <DollarSign size={20} />
+        <span className="text-xs">Finances</span>
+      </NavLink>
+
       {/* Icône des couveuses */}
       <NavLink to="/couveuse/dashboard" className={({ isActive }) => isActive ? "flex flex-col items-center text-green-600" : "flex flex-col items-center text-gray-500"}>
         <Egg size={20} />
         <span className="text-xs">Couveuses</span>
       </NavLink>
-
-      {/* Icône de notification */}
-      <NotificationButton variant="mobile" />
 
       <NavLink to="/rapports" className={({ isActive }) => isActive ? "flex flex-col items-center text-green-600" : "flex flex-col items-center text-gray-500"}>
         <BarChart2 size={20} />

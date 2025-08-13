@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('ligne_factures', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('facture_id')->constrained('factures')->onDelete('cascade');
             $table->string('produit');
             $table->integer('quantite');

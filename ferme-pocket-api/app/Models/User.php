@@ -66,4 +66,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Presence::class);
     }
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+    public function isTenantAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

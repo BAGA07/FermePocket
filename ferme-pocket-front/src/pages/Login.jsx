@@ -1,35 +1,48 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../api/axios"; // notre config axios
+import axios from "../api/axios"; // config axios
 
-export default function Login() {
+export default function AuthForm() {
   const navigate = useNavigate();
+
+  // Form states
+  const [isRegister, setIsRegister] = useState(false); // false = login, true = register
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  // UI states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const res = await axios.post("/login", { email, password });
+      let endpoint = isRegister ? "/register" : "/login";
+      let payload = isRegister
+        ? { name, email, password, password_confirmation: passwordConfirm }
+        : { email, password };
 
-      // L'API retourne les données dans res.data.data
-      if (res.data.status === 'success' && res.data.data.token) {
+      const res = await axios.post(endpoint, payload);
+
+      if (res.data.status === "success" && res.data.data.token) {
         localStorage.setItem("auth_token", res.data.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.data.user));
-        console.log('Token sauvegardé depuis Login:', res.data.data.token);
-        
         navigate("/");
       } else {
         setError("Réponse inattendue du serveur.");
       }
     } catch (err) {
-      console.error('Erreur de connexion:', err);
-      setError("Email ou mot de passe incorrect.");
+      console.error("Erreur:", err);
+      setError(
+        isRegister
+          ? "Erreur lors de l'inscription. Vérifiez vos informations."
+          : "Email ou mot de passe incorrect."
+      );
     } finally {
       setLoading(false);
     }
@@ -41,7 +54,9 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-indigo-600">FermePocket</h1>
-          <p className="text-gray-500">Connectez-vous à votre espace</p>
+          <p className="text-gray-500">
+            {isRegister ? "Créez votre compte" : "Connectez-vous à votre espace"}
+          </p>
         </div>
 
         {/* Erreur */}
@@ -52,7 +67,23 @@ export default function Login() {
         )}
 
         {/* Formulaire */}
-        <form onSubmit={handleLogin} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {isRegister && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Nom complet
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                placeholder="Votre nom"
+                required
+              />
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Adresse email
@@ -81,23 +112,60 @@ export default function Login() {
             />
           </div>
 
+          {isRegister && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Confirmer le mot de passe
+              </label>
+              <input
+                type="password"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+                className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                placeholder="********"
+                required
+              />
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
           >
-            {loading ? "Connexion..." : "Se connecter"}
+            {loading
+              ? isRegister
+                ? "Inscription..."
+                : "Connexion..."
+              : isRegister
+              ? "S'inscrire"
+              : "Se connecter"}
           </button>
         </form>
 
         {/* Liens */}
-        <div className="mt-6 flex justify-between text-sm">
-          <a href="#" className="text-indigo-600 hover:underline">
-            Mot de passe oublié ?
-          </a>
-          <a href="#" className="text-indigo-600 hover:underline">
-            S'inscrire
-          </a>
+        <div className="mt-6 text-center text-sm">
+          {isRegister ? (
+            <>
+              Déjà un compte ?{" "}
+              <button
+                onClick={() => setIsRegister(false)}
+                className="text-indigo-600 hover:underline"
+              >
+                Se connecter
+              </button>
+            </>
+          ) : (
+            <>
+              Pas encore de compte ?{" "}
+              <button
+                onClick={() => setIsRegister(true)}
+                className="text-indigo-600 hover:underline"
+              >
+                S'inscrire
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

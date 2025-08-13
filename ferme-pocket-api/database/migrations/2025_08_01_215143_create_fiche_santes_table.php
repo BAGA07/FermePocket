@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('fiche_santes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('lot_id')->constrained('lot_volailles')->onDelete('cascade');
             $table->string('maladie');
             $table->text('symptomes')->nullable();

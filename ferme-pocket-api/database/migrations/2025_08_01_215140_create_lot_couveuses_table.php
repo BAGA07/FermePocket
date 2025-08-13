@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('lots_couveuses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('couveuse_id')->constrained('couveuses')->onDelete('cascade');
             $table->string('code_lot');
             $table->integer('nb_oeufs');

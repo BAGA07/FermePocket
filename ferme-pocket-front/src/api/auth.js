@@ -9,14 +9,14 @@ export const authService = {
         email,
         password
       });
-      
+
       // L'API retourne les données dans response.data.data
       if (response.data.status === 'success' && response.data.data.token) {
         localStorage.setItem('auth_token', response.data.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
         console.log('Token sauvegardé:', response.data.data.token);
       }
-      
+
       return response.data;
     } catch (error) {
       console.error('Erreur lors de la connexion:', error);
@@ -28,14 +28,14 @@ export const authService = {
   register: async (userData) => {
     try {
       const response = await api.post('/register', userData);
-      
+
       // L'API retourne les données dans response.data.data
       if (response.data.status === 'success' && response.data.data.token) {
         localStorage.setItem('auth_token', response.data.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
         console.log('Token sauvegardé:', response.data.data.token);
       }
-      
+
       return response.data;
     } catch (error) {
       console.error('Erreur lors de l\'inscription:', error);

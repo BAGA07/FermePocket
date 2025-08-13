@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('presences', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('personnel_id')->constrained('personnels')->onDelete('cascade');
             $table->date('date');
             $table->enum('statut', ['present', 'absent', 'conge'])->default('present');

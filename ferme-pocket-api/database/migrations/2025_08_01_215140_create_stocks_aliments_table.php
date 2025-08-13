@@ -14,6 +14,7 @@ class CreateStocksAlimentsTable extends Migration
         Schema::create('stock_aliments', function (Blueprint $table) {
             $table->id(); // équivalent unsignedBigInteger autoIncrement
             $table->string('nom');
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->string('unite'); // kg, sac, litre
             $table->float('quantite');
             $table->float('seuil_alerte')->default(0);

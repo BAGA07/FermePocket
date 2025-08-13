@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('role')->default('employe'); // admin, employe, veterinaire
             $table->string('telephone')->nullable();
+            $table->foreignId('tenant_id')->nullable()->after('id')->constrained()->cascadeOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -47,5 +48,6 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('tenants'); // Assurez-vous de supprimer la table des locataires si elle existe
     }
 };

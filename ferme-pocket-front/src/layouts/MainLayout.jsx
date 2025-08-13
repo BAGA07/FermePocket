@@ -1,6 +1,7 @@
 // src/layouts/MainLayout.jsx
 import { useState } from "react";
 import MobileNav from "../components/MobileNav";
+import MobileTopBar from "../components/MobileTopBar";
 import { NavLink, useNavigate } from "react-router-dom";
 import NotificationButton from "../components/NotificationButton";
 import NotificationToast from "../components/NotificationToast";
@@ -61,6 +62,14 @@ export default function MainLayout({ children }) {
             }
           >
             Stocks
+          </NavLink>
+          <NavLink
+            to="/finances"
+            className={({ isActive }) =>
+              isActive ? "text-green-600 font-semibold" : "text-gray-600"
+            }
+          >
+            Finances
           </NavLink>
           <NavLink
             to="/couveuse/dashboard"
@@ -125,8 +134,11 @@ export default function MainLayout({ children }) {
         </div>
       </header>
 
+      {/* Topbar mobile */}
+      <MobileTopBar />
+
       {/* Contenu */}
-      <main className="flex-1 p-4">{children}</main>
+      <main className="flex-1 p-4 pt-12 pb-16 md:pt-4 md:pb-4">{children}</main>
 
       {/* Navigation mobile */}
       <MobileNav onLogout={handleLogout} />

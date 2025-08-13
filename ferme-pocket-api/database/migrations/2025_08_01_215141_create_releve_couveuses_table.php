@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('releve_couveuses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('couveuse_id')->constrained('couveuses')->onDelete('cascade');
             $table->float('temperature');
             $table->float('humidite');

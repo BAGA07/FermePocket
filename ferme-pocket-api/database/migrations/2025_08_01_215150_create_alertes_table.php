@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('alertes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->string('type');
             $table->text('message');
             $table->enum('statut', ['vue', 'non_vue'])->default('non_vue');

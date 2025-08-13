@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('lot_volailles', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->enum('type', ['pondeuse', 'chair']);
             $table->integer('quantite');
             $table->date('date_debut');
