@@ -18,6 +18,7 @@ class ClientSeeder extends Seeder
                 'telephone' => $faker->phoneNumber(),
                 'email' => $faker->companyEmail(),
                 'adresse' => $faker->address(),
+                'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
             ]);
         }
     }

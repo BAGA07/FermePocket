@@ -22,6 +22,7 @@ class PersonnelSeeder extends Seeder
                 'telephone' => $faker->phoneNumber(),
                 'date_embauche' => $faker->dateTimeBetween('-2 years', 'now'),
                 'statut' => $faker->randomElement(['actif', 'inactif']),
+                'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
             ]);
         }
     }

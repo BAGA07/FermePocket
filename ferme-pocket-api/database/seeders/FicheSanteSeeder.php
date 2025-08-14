@@ -25,6 +25,7 @@ class FicheSanteSeeder extends Seeder
                     'traitement' => $faker->sentence(),
                     'date' => $faker->dateTimeBetween('-3 months', 'now'),
                     'veterinaire_id' => $faker->randomElement($vets->toArray()),
+                    'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
                 ]);
             }
         }

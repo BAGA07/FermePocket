@@ -21,6 +21,7 @@ class FactureSeeder extends Seeder
                     'date' => $faker->dateTimeBetween('-6 months', 'now'),
                     'montant_total' => $faker->randomFloat(2, 10000, 150000),
                     'statut' => $faker->randomElement(['payee', 'impayee', 'partiel']),
+                    'tenant_id' => 1, // Assuming tenant_id is set on clients
                 ]);
             }
         }

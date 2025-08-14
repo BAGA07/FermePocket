@@ -20,6 +20,7 @@ class PresenceSeeder extends Seeder
                     'personnel_id' => $perso->id,
                     'date' => $faker->dateTimeBetween('-1 month', 'now'),
                     'statut' => $faker->randomElement(['present', 'absent', 'conge']),
+                    'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
                 ]);
             }
         }

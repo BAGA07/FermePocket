@@ -9,7 +9,10 @@ export const elevageService = {
   // Obtenir tous les lots de volailles
   getAllLots: async () => {
     try {
-      const response = await api.get('/lots-volailles');
+      const response = await api.get('/lot-volailles');
+      if (!response.data || !Array.isArray(response.data)) {
+        throw new Error('Données de lots de volailles invalides');
+      }
       return response.data;
     } catch (error) {
       console.error('Erreur lors de la récupération des lots de volailles:', error);
@@ -20,7 +23,7 @@ export const elevageService = {
   // Obtenir un lot de volailles par ID
   getLotById: async (id) => {
     try {
-      const response = await api.get(`/lots-volailles/${id}`);
+      const response = await api.get(`/lot-volailles/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Erreur lors de la récupération du lot ${id}:`, error);
@@ -31,7 +34,7 @@ export const elevageService = {
   // Créer un nouveau lot de volailles
   createLot: async (data) => {
     try {
-      const response = await api.post('/lots-volailles', data);
+      const response = await api.post('/lot-volailles', data);
       return response.data;
     } catch (error) {
       console.error('Erreur lors de la création du lot de volailles:', error);
@@ -42,7 +45,7 @@ export const elevageService = {
   // Mettre à jour un lot de volailles
   updateLot: async (id, data) => {
     try {
-      const response = await api.put(`/lots-volailles/${id}`, data);
+      const response = await api.put(`/lot-volailles/${id}`, data);
       return response.data;
     } catch (error) {
       console.error(`Erreur lors de la mise à jour du lot ${id}:`, error);
@@ -53,7 +56,7 @@ export const elevageService = {
   // Supprimer un lot de volailles
   deleteLot: async (id) => {
     try {
-      const response = await api.delete(`/lots-volailles/${id}`);
+      const response = await api.delete(`/lot-volailles/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Erreur lors de la suppression du lot ${id}:`, error);
@@ -91,6 +94,7 @@ export const elevageService = {
   createVaccination: async (data) => {
     try {
       const response = await api.post('/vaccinations', data);
+      console.log('Vaccination créée:', response.data);
       return response.data;
     } catch (error) {
       console.error('Erreur lors de la création de la vaccination:', error);

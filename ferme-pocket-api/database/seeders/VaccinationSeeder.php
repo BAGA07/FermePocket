@@ -21,6 +21,7 @@ class VaccinationSeeder extends Seeder
                     'nom_vaccin' => $faker->randomElement(['Newcastle', 'Gumboro', 'Bronchite infectieuse']),
                     'date' => $faker->dateTimeBetween('-6 months', 'now'),
                     'remarques' => $faker->sentence(),
+                    'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
                 ]);
             }
         }

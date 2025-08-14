@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('role')->default('employe'); // admin, employe, veterinaire
             $table->string('telephone')->nullable();
-            $table->foreignId('tenant_id')->nullable()->after('id')->constrained()->cascadeOnDelete();
+            $table->foreignId('tenant_id')->nullable()->constrained()->cascadeOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });

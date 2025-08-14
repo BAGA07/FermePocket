@@ -11,11 +11,16 @@ class TenantMiddleware
     public function handle(Request $request, Closure $next)
     {
         // 1️⃣ Récupérer le tenant depuis le sous-domaine ou le token
+
         $host = $request->getHost(); // ex: client1.ferme-pocket.com
         $subdomain = explode('.', $host)[0]; // "client1"
 
-        // 2️⃣ Charger le tenant
-        $tenant = Tenant::where('subdomain', $subdomain)->first();
+        // Si on est en local (localhost ou 127.0.0.1), utiliser le tenant par défaut (id=1)
+        if ($host === 'localhost' || $host === '127.0.0.1') {
+            $tenant = Tenant::find(1);
+        } else {
+            $tenant = Tenant::where('subdomain', $subdomain)->first();
+        }
 
         if (!$tenant) {
             abort(404, 'Tenant introuvable.');

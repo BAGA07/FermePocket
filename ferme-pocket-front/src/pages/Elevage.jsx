@@ -39,17 +39,17 @@ export default function Elevage() {
 
   // États pour les formulaires
   const [nouveauLot, setNouveauLot] = useState({
-    nom_lot: '',
+    type: '',
     type_volaille: 'chair',
     quantite: '',
-    date_arrivee: new Date().toISOString().split('T')[0],
+    date_debut: new Date().toISOString().split('T')[0],
     origine: ''
   });
 
   const [nouvelleVaccination, setNouvelleVaccination] = useState({
-    lot_volaille_id: '',
-    vaccin: '',
-    date_vaccination: new Date().toISOString().split('T')[0],
+    lot_id: '',
+    nom_vaccin: '',
+    date: new Date().toISOString().split('T')[0],
     dose: '',
     observations: ''
   });
@@ -71,7 +71,6 @@ export default function Elevage() {
         elevageService.getAllVaccinations(),
         elevageService.getAllAlertes()
       ]);
-
       setLots(Array.isArray(lotsData) ? lotsData : []);
       setVaccinations(Array.isArray(vaccinationsData) ? vaccinationsData : []);
       setAlertes(Array.isArray(alertesData) ? alertesData : []);
@@ -108,10 +107,10 @@ export default function Elevage() {
 
       // Réinitialiser le formulaire
       setNouveauLot({
-        nom_lot: '',
+        type: '',
         type_volaille: 'chair',
         quantite: '',
-        date_arrivee: new Date().toISOString().split('T')[0],
+        date_debut: new Date().toISOString().split('T')[0],
         origine: ''
       });
       setShowAddLot(false);
@@ -136,9 +135,9 @@ export default function Elevage() {
 
       // Réinitialiser le formulaire
       setNouvelleVaccination({
-        lot_volaille_id: '',
-        vaccin: '',
-        date_vaccination: new Date().toISOString().split('T')[0],
+        lot_id: '',
+        nom_vaccin: '',
+        date: new Date().toISOString().split('T')[0],
         dose: '',
         observations: ''
       });
@@ -154,13 +153,13 @@ export default function Elevage() {
 
   // Filtrer les données selon le terme de recherche
   const filteredLots = lots.filter(lot =>
-    lot.nom_lot?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lot.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     lot.type_volaille?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredVaccinations = vaccinations.filter(vaccination =>
-    vaccination.vaccin?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    vaccination.lot_volaille?.nom_lot?.toLowerCase().includes(searchTerm.toLowerCase())
+    vaccination.nom_vaccin?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    vaccination.lot_volaille?.type?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
@@ -357,6 +356,7 @@ export default function Elevage() {
 
             {/* Onglet Lots de Volailles */}
             {activeTab === 'lots' && (
+            
               <div className="space-y-4">
                 {filteredLots.length === 0 ? (
                   <div className="text-center py-12">
@@ -373,7 +373,7 @@ export default function Elevage() {
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-lg font-semibold text-gray-900">{lot.nom_lot}</h3>
+                              <h3 className="text-lg font-semibold text-gray-900">{lot.type}</h3>
                               <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getTypeVolailleColor(lot.type_volaille)}`}>
                                 {lot.type_volaille}
                               </span>
@@ -383,7 +383,7 @@ export default function Elevage() {
                                 <span className="font-medium">Quantité:</span> {lot.quantite} volailles
                               </div>
                               <div>
-                                <span className="font-medium">Date d'arrivée:</span> {new Date(lot.date_arrivee).toLocaleDateString('fr-FR')}
+                                <span className="font-medium">Date d'arrivée:</span> {new Date(lot.date_debut).toLocaleDateString('fr-FR')}
                               </div>
                               <div>
                                 <span className="font-medium">Origine:</span> {lot.origine || 'Non spécifiée'}
@@ -427,17 +427,17 @@ export default function Elevage() {
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-lg font-semibold text-gray-900">{vaccination.vaccin}</h3>
+                              <h3 className="text-lg font-semibold text-gray-900">{vaccination.nom_vaccin}</h3>
                               <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
                                 Administré
                               </span>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
                               <div>
-                                <span className="font-medium">Lot:</span> {vaccination.lot_volaille?.nom_lot || 'Non spécifié'}
+                                <span className="font-medium">Lot:</span> {vaccination.lot_volaille?.type || 'Non spécifié'}
                               </div>
                               <div>
-                                <span className="font-medium">Date:</span> {new Date(vaccination.date_vaccination).toLocaleDateString('fr-FR')}
+                                <span className="font-medium">Date:</span> {new Date(vaccination.date).toLocaleDateString('fr-FR')}
                               </div>
                               <div>
                                 <span className="font-medium">Dose:</span> {vaccination.dose || 'Non spécifiée'}

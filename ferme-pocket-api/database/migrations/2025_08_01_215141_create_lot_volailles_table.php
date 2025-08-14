@@ -14,11 +14,25 @@ return new class extends Migration
         Schema::create('lot_volailles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
-            $table->enum('type', ['pondeuse', 'chair']);
-            $table->integer('quantite');
-            $table->date('date_debut');
-            $table->float('poids_moyen')->nullable();
-            $table->enum('statut', ['actif', 'vendu', 'perdu'])->default('actif');
+            $table->string('nom_lot'); // Ex: "Lot Pondeuses Janvier"
+            $table->string('type_volaille'); // chair, pondeuse, etc.
+            $table->string('race')->nullable(); // race de la volaille
+            $table->string('origine')->nullable(); // fournisseur, ferme d'origine
+
+            // Détails quantitatifs
+            $table->unsignedInteger('quantite_initiale'); // nombre de volailles à l'arrivée
+            $table->unsignedInteger('quantite_actuelle')->nullable(); // mis à jour après ventes/pertes
+
+            // Dates importantes
+            $table->date('date_arrivee'); // date d'arrivée des volailles
+            $table->date('date_sortie')->nullable(); // date de fin ou vente du lot
+
+            // Économie
+            $table->decimal('prix_unitaire', 10, 2)->nullable(); // prix d'achat par volaille
+            $table->decimal('prix_total', 12, 2)->nullable(); // calculé ou saisi
+
+            // Traçabilité
+            $table->string('etat')->default('actif'); // actif, vendu, terminé, etc.
             $table->timestamps();
         });
     }

@@ -27,7 +27,8 @@ class LigneFactureSeeder extends Seeder
                     'produit'      => $faker->randomElement(['Œufs', 'Poulets chair', 'Poules pondeuses']),
                     'quantite'     => $qte,
                     'prix_unitaire' => $pu,
-                    'prix_total'   => $total
+                    'prix_total'   => $total,
+                    'tenant_id'    => 1, // Assumes tenant_id is set in Facture model
                 ]);
             }
         }

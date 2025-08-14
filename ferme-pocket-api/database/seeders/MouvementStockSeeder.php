@@ -22,6 +22,7 @@ class MouvementStockSeeder extends Seeder
                     'quantite' => $faker->randomFloat(1, 5, 50),
                     'raison' => $faker->sentence(),
                     'date_mouvement' => $faker->dateTimeBetween('-1 month', 'now'),
+                    'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
                 ]);
             }
         }

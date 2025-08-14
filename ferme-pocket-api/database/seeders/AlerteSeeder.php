@@ -19,6 +19,7 @@ class AlerteSeeder extends Seeder
                 'type' => $faker->randomElement($types),
                 'message' => $faker->sentence(),
                 'statut' => $faker->randomElement(['vue', 'non_vue']),
+                'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
             ]);
         }
     }

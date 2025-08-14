@@ -19,6 +19,7 @@ class LotVolailleSeeder extends Seeder
                 'date_debut' => $faker->dateTimeBetween('-6 months', 'now'),
                 'poids_moyen' => $faker->randomFloat(2, 1.5, 3.0),
                 'statut' => $faker->randomElement(['actif', 'vendu', 'perdu']),
+                'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
             ]);
         }
     }

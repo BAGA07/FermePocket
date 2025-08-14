@@ -146,8 +146,8 @@ export function ModalAjouterVaccination({
               Lot de volailles
             </label>
             <select
-              value={nouvelleVaccination.lot_volaille_id}
-              onChange={(e) => setNouvelleVaccination({ ...nouvelleVaccination, lot_volaille_id: e.target.value })}
+              value={nouvelleVaccination.lot_id || ""}
+              onChange={(e) => setNouvelleVaccination({ ...nouvelleVaccination, lot_id: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
@@ -166,8 +166,8 @@ export function ModalAjouterVaccination({
             </label>
             <input
               type="text"
-              value={nouvelleVaccination.vaccin}
-              onChange={(e) => setNouvelleVaccination({ ...nouvelleVaccination, vaccin: e.target.value })}
+              value={nouvelleVaccination.nom_vaccin || ""}
+              onChange={(e) => setNouvelleVaccination({ ...nouvelleVaccination, nom_vaccin: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Ex: Newcastle, Bronchite infectieuse"
               required
@@ -180,8 +180,8 @@ export function ModalAjouterVaccination({
             </label>
             <input
               type="date"
-              value={nouvelleVaccination.date_vaccination}
-              onChange={(e) => setNouvelleVaccination({ ...nouvelleVaccination, date_vaccination: e.target.value })}
+              value={nouvelleVaccination.date || ""}
+              onChange={(e) => setNouvelleVaccination({ ...nouvelleVaccination, date: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
@@ -193,7 +193,7 @@ export function ModalAjouterVaccination({
             </label>
             <input
               type="text"
-              value={nouvelleVaccination.dose}
+              value={nouvelleVaccination.dose || ""}
               onChange={(e) => setNouvelleVaccination({ ...nouvelleVaccination, dose: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Ex: 0.5ml par volaille"
@@ -205,7 +205,7 @@ export function ModalAjouterVaccination({
               Observations
             </label>
             <textarea
-              value={nouvelleVaccination.observations}
+              value={nouvelleVaccination.observations || ""}
               onChange={(e) => setNouvelleVaccination({ ...nouvelleVaccination, observations: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Observations sur la vaccination..."

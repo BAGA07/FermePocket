@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('admin123'),
             'role' => 'admin',
             'telephone' => '+22370000001',
+            //'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
         ]);
 
         // Employés

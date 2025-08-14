@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('releves-couveuses', ReleveCouveuseController::class);
 
     // Volailles
-    Route::apiResource('lots-volailles', LotVolailleController::class);
+    Route::apiResource('lot-volailles', LotVolailleController::class);
     Route::apiResource('vaccinations', VaccinationController::class);
 
     // Santé vétérinaire

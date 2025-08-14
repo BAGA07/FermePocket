@@ -24,7 +24,8 @@ class StockAlimentSeeder extends Seeder
                 'nom' => $aliment['nom'],
                 'unite' => $aliment['unite'],
                 'quantite' => $faker->randomFloat(1, 50, 500),
-                'seuil_alerte' => $faker->randomFloat(1, 10, 50)
+                'seuil_alerte' => $faker->randomFloat(1, 10, 50),
+                'tenant_id' => 1, // Assuming tenant IDs are between 1 and 5
             ]);
         }
     }
