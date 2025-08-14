@@ -20,6 +20,8 @@ import elevageService from "../api/elevage";
 import { ensureAuthenticated } from "../utils/auth-helper";
 import { ModalAjouterLot, ModalAjouterVaccination } from "../components/ElevageModals";
 
+// Modale d'édition de lot (réutilise ModalAjouterLot mais en mode édition)
+
 export default function Elevage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("lots");
@@ -33,9 +35,13 @@ export default function Elevage() {
   const [vaccinations, setVaccinations] = useState([]);
   const [alertes, setAlertes] = useState([]);
 
+
   // États pour les modales
   const [showAddLot, setShowAddLot] = useState(false);
   const [showAddVaccination, setShowAddVaccination] = useState(false);
+  const [showEditLot, setShowEditLot] = useState(false);
+  const [lotToEdit, setLotToEdit] = useState(null);
+
 
   // États pour les formulaires
   const [nouveauLot, setNouveauLot] = useState({
@@ -45,6 +51,45 @@ export default function Elevage() {
     date_debut: new Date().toISOString().split('T')[0],
     origine: ''
   });
+  const [editLot, setEditLot] = useState({
+    type: '',
+    type_volaille: 'chair',
+    quantite: '',
+    date_debut: new Date().toISOString().split('T')[0],
+    origine: ''
+  });
+  // Fonction pour ouvrir la modale d'édition avec les données du lot sélectionné
+  const handleOpenEditLot = (lot) => {
+    setEditLot({
+      ...lot,
+      quantite: lot.quantite?.toString() || '',
+      date_debut: lot.date_debut ? new Date(lot.date_debut).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    });
+    setLotToEdit(lot);
+    setShowEditLot(true);
+  };
+
+  // Fonction pour éditer un lot
+  const handleEditLot = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      await ensureAuthenticated();
+      const lotData = {
+        ...editLot,
+        quantite: parseInt(editLot.quantite)
+      };
+      await elevageService.updateLot(lotToEdit.id, lotData);
+      await loadAllData();
+      setShowEditLot(false);
+      setLotToEdit(null);
+    } catch (err) {
+      console.error('Erreur lors de la modification du lot:', err);
+      setError('Erreur lors de la modification du lot');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [nouvelleVaccination, setNouvelleVaccination] = useState({
     lot_id: '',
@@ -391,13 +436,121 @@ export default function Elevage() {
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            <button className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-white transition-colors">
+                            {/* Voir */}
+                            <button
+                              className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-white transition-colors"
+                              title="Voir les détails"
+                              onClick={() => alert(`Détail du lot : ${lot.type} (${lot.type_volaille})\nQuantité : ${lot.quantite}\nDate d'arrivée : ${new Date(lot.date_debut).toLocaleDateString('fr-FR')}\nOrigine : ${lot.origine || 'Non spécifiée'}`)}
+                            >
                               <Eye className="w-4 h-4" />
                             </button>
-                            <button className="p-2 text-gray-400 hover:text-green-600 rounded-lg hover:bg-white transition-colors">
+                            {/* Modifier */}
+                            <button
+                              className="p-2 text-gray-400 hover:text-green-600 rounded-lg hover:bg-white transition-colors"
+                              title="Modifier le lot"
+                              onClick={() => handleOpenEditLot(lot)}
+                            >
                               <Edit className="w-4 h-4" />
                             </button>
-                            <button className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-white transition-colors">
+      {/* Modale d'édition de lot */}
+      {showEditLot && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Modifier le lot</h3>
+              <button
+                onClick={() => setShowEditLot(false)}
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleEditLot} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <input
+                  type="text"
+                  value={editLot.type}
+                  onChange={e => setEditLot({ ...editLot, type: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Type de volaille</label>
+                <select
+                  value={editLot.type_volaille}
+                  onChange={e => setEditLot({ ...editLot, type_volaille: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="chair">Chair</option>
+                  <option value="pondeuse">Pondeuse</option>
+                  <option value="reproducteur">Reproducteur</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Quantité</label>
+                <input
+                  type="number"
+                  value={editLot.quantite}
+                  onChange={e => setEditLot({ ...editLot, quantite: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  min="1"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Date d'arrivée</label>
+                <input
+                  type="date"
+                  value={editLot.date_debut}
+                  onChange={e => setEditLot({ ...editLot, date_debut: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Origine</label>
+                <input
+                  type="text"
+                  value={editLot.origine}
+                  onChange={e => setEditLot({ ...editLot, origine: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: Ferme Martin"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowEditLot(false)}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                >
+                  {loading ? 'Modification...' : 'Enregistrer'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+                            {/* Supprimer */}
+                            <button
+                              className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-white transition-colors"
+                              title="Supprimer le lot"
+                              onClick={() => {
+                                if (window.confirm('Voulez-vous vraiment supprimer ce lot ?')) {
+                                  // Appel API suppression à implémenter ici
+                                  alert('Suppression à implémenter');
+                                }
+                              }}
+                            >
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>

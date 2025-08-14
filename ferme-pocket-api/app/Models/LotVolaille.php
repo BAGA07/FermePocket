@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class LotVolaille extends Model
 {
     protected $table = 'lot_volailles';
+    protected $fillable = [
+        'id',
+        'type',
+        'quantite',
+        'date_debut',
+
+    ];
 
     public function vaccinations()
     {
