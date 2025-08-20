@@ -13,7 +13,8 @@ import {
   Pill,
   Package,
   Bell,
-  X
+  X,
+  Egg
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import elevageService from "../api/elevage";
@@ -329,7 +330,7 @@ export default function Elevage() {
           <div className="border-b border-gray-200">
             <nav className="flex space-x-8 px-6">
               {[
-                { id: 'lots', label: 'Lots de Volailles', icon: Users },
+                { id: 'lots', label: 'Lots de Volailles', icon: Egg },
                 { id: 'vaccinations', label: 'Vaccinations', icon: Pill },
                 { id: 'stocks', label: 'Stocks Aliments', icon: Package }
               ].map(({ id, label, icon: Icon }) => (

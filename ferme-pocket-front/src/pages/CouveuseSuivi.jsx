@@ -260,6 +260,8 @@ console.log('couveuseDatas', couveuse);
               </span>
             </div>
             <p className="text-sm sm:text-base text-gray-600 mt-1 truncate">
+              console.log(couveuses);
+              
               {couveuse.type} • Capacité: {couveuse.capacite} œufs
             </p>
           </div>

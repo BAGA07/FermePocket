@@ -99,7 +99,7 @@ export default function WelcomeHeader() {
                                 {formatTime(currentTime)}
                             </div>
                             <div className="text-green-100 text-sm font-medium">
-                                Mise à jour en temps réel
+                                Horloge
                             </div>
                         </div>
                     </div>

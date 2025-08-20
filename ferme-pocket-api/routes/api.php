@@ -62,6 +62,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Personnel & Présence
     Route::apiResource('personnels', PersonnelController::class);
     Route::apiResource('presences', PresenceController::class);
+    // Transactions
+    Route::apiResource('transactions', TransactionController::class);
 
     // Déconnexion
     Route::post('/logout', [AuthController::class, 'logout']);

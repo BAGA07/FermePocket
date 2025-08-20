@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, Package, DollarSign, ShoppingCart, Calendar, CheckCircle, RefreshCw } from "lucide-react";
+import { Users, Package, DollarSign, ShoppingCart, Calendar, CheckCircle, RefreshCw, EggFried, EggFriedIcon, Egg } from "lucide-react";
 import WelcomeHeader from "../components/WelcomeHeader";
 import CardDataStats from "../components/CardDataStats";
 import CouveuseCard from "../components/CouveuseCard";
@@ -8,13 +8,16 @@ import QuickMetrics from "../components/QuickMetrics";
 import WeatherWidget from "../components/WeatherWidget";
 import ChartOne from "../components/ChartOne";
 import ChartTwo from "../components/ChartTwo";
+import couveuseService from "@/api/couveuse";
 
 export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
+  /* // recupérer les données du dashboard
+  const data = couveuseService.getDashboardData(); */
   const [dashboardData, setDashboardData] = useState({
     users: { total: 0, growth: 0, trend: 'up' },
-    products: { total: 0, growth: 0, trend: 'up' },
+    products: { total: 100, growth: 0, trend: 'up' },
     sales: { total: 0, growth: 0, trend: 'up' },
     orders: { total: 0, growth: 0, trend: 'up' },
     performance: { sales: 0, survival: 0, incubator: 0 },
@@ -117,39 +120,23 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* En-tête de bienvenue */}
       <WelcomeHeader />
-
-      {/* Métriques rapides */}
-      <QuickMetrics />
-
-      {/* Bouton de rafraîchissement */}
-      <div className="flex justify-end">
-        <button
-          onClick={handleRefresh}
-          disabled={isLoading}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-          {isLoading ? 'Chargement...' : 'Rafraîchir'}
-        </button>
-      </div>
-
-      {/* Cartes de statistiques principales */}
+{/* Cartes de statistiques principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <CardDataStats
-          title="Total Utilisateurs"
+          title="Total Volailles"
           total={formatNumber(dashboardData.users.total)}
           rate={`${dashboardData.users.growth}%`}
           levelUp={dashboardData.users.trend === 'up'}
-          icon={<Users />}
+          icon={<EggFriedIcon />}
           trend={dashboardData.users.trend}
           color={getTrendColor(dashboardData.users.trend)}
         />
         <CardDataStats
-          title="Total Produits"
+          title="Total Oeufs En Incubation"
           total={formatNumber(dashboardData.products.total)}
           rate={`${dashboardData.products.growth}%`}
           levelUp={dashboardData.products.trend === 'up'}
-          icon={<Package />}
+          icon={<Egg />}
           trend={dashboardData.products.trend}
           color={getTrendColor(dashboardData.products.trend)}
         />
@@ -172,6 +159,22 @@ export default function Dashboard() {
           color={getTrendColor(dashboardData.orders.trend)}
         />
       </div>
+      {/* Métriques rapides */}
+      {/* <QuickMetrics /> */}
+
+      {/* Bouton de rafraîchissement */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleRefresh}
+          disabled={isLoading}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+          {isLoading ? 'Chargement...' : 'Rafraîchir'}
+        </button>
+      </div>
+
+      
 
       {/* Carte des couveuses */}
       <CouveuseCard />
