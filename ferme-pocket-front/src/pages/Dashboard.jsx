@@ -3,12 +3,12 @@ import { Users, Package, DollarSign, ShoppingCart, Calendar, CheckCircle, Refres
 import WelcomeHeader from "../components/WelcomeHeader";
 import CardDataStats from "../components/CardDataStats";
 import CouveuseCard from "../components/CouveuseCard";
-import CouveuseAlertWidget from "../components/CouveuseAlertWidget";
-import QuickMetrics from "../components/QuickMetrics";
+//import CouveuseAlertWidget from "../components/CouveuseAlertWidget";
+//import QuickMetrics from "../components/QuickMetrics";
 import WeatherWidget from "../components/WeatherWidget";
 import ChartOne from "../components/ChartOne";
 import ChartTwo from "../components/ChartTwo";
-import couveuseService from "@/api/couveuse";
+//import couveuseService from "@/api/couveuse";
 
 export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -174,31 +174,7 @@ export default function Dashboard() {
         </button>
       </div>
 
-      
-
-      {/* Carte des couveuses */}
-      <CouveuseCard />
-
-      {/* Widget d'alertes des couveuses */}
-      <CouveuseAlertWidget />
-
-      {/* Section principale avec graphiques et météo */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Graphiques généraux */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <ChartOne />
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <ChartTwo />
-          </div>
-        </div>
-
-        {/* Météo et informations */}
-        <div className="space-y-6">
-          <WeatherWidget />
-
-          {/* Prochaines échéances */}
+      {/* Prochaines échéances */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -244,10 +220,25 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* Résumé des performances */}
+      {/* Carte des couveuses */}
+      <CouveuseCard />
+
+      {/* Widget d'alertes des couveuses */}
+      {/* <CouveuseAlertWidget /> */}
+
+      {/* Section principale avec graphiques et météo */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Graphiques généraux */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <ChartOne />
+          </div>
+          {/* <div className="bg-white rounded-xl shadow-lg p-6">
+            <ChartTwo />
+          </div> */}
+
+          {/* Résumé des performances */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -295,6 +286,13 @@ export default function Dashboard() {
               ></div>
             </div>
           </div>
+        </div>
+      </div>
+        </div>
+
+        {/* Météo et informations */}
+        <div className="space-y-6">
+          <WeatherWidget />
         </div>
       </div>
     </div>
